@@ -1,0 +1,6 @@
+<resources>
+    <style name="Invisible" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowNoDisplay">false</item>
+    </style>
+</resources>

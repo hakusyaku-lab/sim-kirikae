@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SIM切替</string>
+    <string name="sc1_short">SIM①</string>
+    <string name="sc1_long">データをSIM①に</string>
+    <string name="sc2_short">SIM②</string>
+    <string name="sc2_long">データをSIM②に</string>
+    <string name="sct_short">SIM切替</string>
+    <string name="sct_long">データSIMを入れ替え</string>
+</resources>

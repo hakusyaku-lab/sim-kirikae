@@ -1,0 +1,26 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut android:shortcutId="sim1" android:enabled="true" android:icon="@drawable/ic_sc1"
+        android:shortcutShortLabel="@string/sc1_short" android:shortcutLongLabel="@string/sc1_long">
+        <intent android:action="jp.hakusyaku.simkirikae.SWITCH"
+            android:targetPackage="jp.hakusyaku.simkirikae"
+            android:targetClass="jp.hakusyaku.simkirikae.ShortcutActivity">
+            <extra android:name="slot" android:value="1" />
+        </intent>
+    </shortcut>
+    <shortcut android:shortcutId="sim2" android:enabled="true" android:icon="@drawable/ic_sc2"
+        android:shortcutShortLabel="@string/sc2_short" android:shortcutLongLabel="@string/sc2_long">
+        <intent android:action="jp.hakusyaku.simkirikae.SWITCH"
+            android:targetPackage="jp.hakusyaku.simkirikae"
+            android:targetClass="jp.hakusyaku.simkirikae.ShortcutActivity">
+            <extra android:name="slot" android:value="2" />
+        </intent>
+    </shortcut>
+    <shortcut android:shortcutId="toggle" android:enabled="true" android:icon="@drawable/ic_sct"
+        android:shortcutShortLabel="@string/sct_short" android:shortcutLongLabel="@string/sct_long">
+        <intent android:action="jp.hakusyaku.simkirikae.SWITCH"
+            android:targetPackage="jp.hakusyaku.simkirikae"
+            android:targetClass="jp.hakusyaku.simkirikae.ShortcutActivity">
+            <extra android:name="slot" android:value="0" />
+        </intent>
+    </shortcut>
+</shortcuts>
