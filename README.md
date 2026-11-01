@@ -11,10 +11,11 @@
 
 ## 使える端末
 
-| | Android | iPhone | Windows | Mac |
-|---|---|---|---|---|
-| アプリ本体 | ○（Android 8 以上・デュアルSIM機） | ✕（下の「iPhoneの場合」） | － | － |
-| 導入の手伝い（PCから入れる） | － | － | ○ `pc/windows` | ○ `pc/mac`（Linuxも可） |
+| Android | iPhone | Windows・Mac |
+|---|---|---|
+| ○（Android 8 以上・デュアルSIM機） | ✕（下の「iPhoneの場合」） | 対象外（PCにはSIMが無いため） |
+
+PC（Windows・Mac）は、Android 端末にアプリを入れるときの手伝いにだけ使います（下の「PCから自動で入れる」）。
 
 動作確認済み：ALLDOCUBE iPlay 80 mini Ultra。メーカー独自の改造が大きい機種では動かないことがあります。
 
