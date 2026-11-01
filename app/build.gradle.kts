@@ -11,8 +11,8 @@ android {
         applicationId = "jp.hakusyaku.simkirikae"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
 
     compileOptions {
@@ -20,13 +20,18 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // 署名鍵はリポジトリに入れない。GitHub Actions が Secrets から一時ファイルに書き出して渡す
+    val keystorePath = System.getenv("SIGNING_KEYSTORE_PATH")
+    val keystorePassword = System.getenv("SIGNING_PASSWORD")
+    val hasReleaseKey = !keystorePath.isNullOrEmpty() && !keystorePassword.isNullOrEmpty()
     signingConfigs {
-        // 毎回同じ鍵で署名して、上書きインストールできるようにする（鍵はリポジトリ内）
-        create("fixed") {
-            storeFile = file("../keystore/simkirikae.jks")
-            storePassword = "simkirikae"
-            keyAlias = "simkirikae"
-            keyPassword = "simkirikae"
+        if (hasReleaseKey) {
+            create("release") {
+                storeFile = file(keystorePath!!)
+                storePassword = keystorePassword
+                keyAlias = "simkirikae"
+                keyPassword = keystorePassword
+            }
         }
     }
 
@@ -34,7 +39,8 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("fixed")
+            // 鍵が無いとき（フォークなど）は開発用の鍵で署名する
+            signingConfig = if (hasReleaseKey) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

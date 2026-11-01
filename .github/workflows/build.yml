@@ -5,13 +5,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -20,19 +22,45 @@ jobs:
       - name: Install Android SDK
         run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
       - uses: gradle/actions/setup-gradle@v6
+      - name: Prepare signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.SIGNING_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            echo "SIGNING_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+          elif [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            echo "::error::Secrets に SIGNING_KEYSTORE_B64 がありません（main は本番の鍵で署名する必要があります）"; exit 1
+          else
+            echo "::warning::署名鍵が無いので開発用の鍵で署名します"
+          fi
       - name: Build
+        env:
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: |
           chmod +x gradlew
           ./gradlew :app:assembleRelease --stacktrace --no-daemon
           cp app/build/outputs/apk/release/app-release.apk SimKirikae.apk
+          rm -f "$RUNNER_TEMP/release.jks"
       - uses: actions/upload-artifact@v4
         with:
           name: SimKirikae
           path: SimKirikae.apk
+
+  release:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: SimKirikae
       - name: Publish release
-        if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          gh release delete latest -y --cleanup-tag || true
-          gh release create latest SimKirikae.apk -t "SIM切替 最新版" -n "build ${{ github.run_number }} / ${{ github.sha }}"
+          gh release delete latest -R "$REPO" -y --cleanup-tag || true
+          gh release create latest SimKirikae.apk -R "$REPO" -t "SIM切替 最新版" -n "build ${{ github.run_number }} / ${{ github.sha }}"
